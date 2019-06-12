@@ -1,0 +1,16 @@
+[
+{
+  "modid": "silveroakoutpost",
+  "name": "Silveroak Outpost",
+  "description": "Example placeholder mod.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["RoitoLeonine"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
