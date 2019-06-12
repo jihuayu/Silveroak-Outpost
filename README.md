@@ -1,2 +1,6 @@
-# Silveroak-Outpost
-Minecraft modding library
+# Silveroak Outpost "银橡前哨"前置模组
+一个Minecraft前置模组。
+
+目前处于开发阶段，主要以代码实现为目的，暂时不太会考虑优化。
+
+模组日后仅考虑中文文档，现在反正没有。
