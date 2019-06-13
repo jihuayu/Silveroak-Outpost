@@ -4,6 +4,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
+import javax.annotation.Nonnull;
+
 public class SilveroakItemTest extends SilveroakItemNormal
 {
 	public SilveroakItemTest()
@@ -13,6 +15,7 @@ public class SilveroakItemTest extends SilveroakItemNormal
 	}
 
 	@Override
+	@Nonnull
 	public String getTranslationKey(ItemStack stack)
 	{
 		switch (stack.getItemDamage())
@@ -33,7 +36,7 @@ public class SilveroakItemTest extends SilveroakItemNormal
 	}
 
 	@Override
-	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items)
+	public void getSubItems(@Nonnull CreativeTabs tab, @Nonnull NonNullList<ItemStack> items)
 	{
 		if (this.isInCreativeTab(tab))
 		{

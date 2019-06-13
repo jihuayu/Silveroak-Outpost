@@ -13,6 +13,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public final class ModelHelper
 {
+	private ModelHelper(){};
 	public static void registerItemVariants(String modid, Item item)
 	{
 		if (item.getHasSubtypes())
@@ -47,8 +48,7 @@ public final class ModelHelper
 
 				ModelLoader.setCustomModelResourceLocation(item, subItem.getMetadata(), new ModelResourceLocation(modid + ":" + subItemName, "inventory"));
 			}
-		}
-		else
+		} else
 		{
 			String itemName = item.getTranslationKey();
 			itemName = itemName.substring(itemName.indexOf(".") + 1);

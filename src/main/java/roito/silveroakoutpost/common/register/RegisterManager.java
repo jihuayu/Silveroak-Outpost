@@ -34,13 +34,15 @@ public final class RegisterManager
 	@SubscribeEvent
 	public static void registerItems(RegistryEvent.Register<Item> event)
 	{
-		event.getRegistry().registerAll(ITEMS.toArray(new Item[ITEMS.size()]));
+		event.getRegistry().registerAll(ITEMS.toArray(new Item[0]));
 	}
+
 	@SubscribeEvent
 	public static void registerBlocks(RegistryEvent.Register<Block> event)
 	{
-		event.getRegistry().registerAll(BLOCKS.toArray(new Block[BLOCKS.size()]));
+		event.getRegistry().registerAll(BLOCKS.toArray(new Block[0]));
 	}
+
 	public static void loadRegistry(FMLPreInitializationEvent event) throws ClassNotFoundException, IllegalAccessException, InstantiationException
 	{
 		ASMDataTable table = event.getAsmData();

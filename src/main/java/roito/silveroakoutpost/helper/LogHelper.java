@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 
 public final class LogHelper
 {
+	private LogHelper(){};
 	public static void error(Logger logger, String format, Object... data)
 	{
 		logger.log(Level.ERROR, String.format(format, data));
