@@ -6,6 +6,8 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -15,6 +17,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static roito.silveroakoutpost.SilveroakOutpost.logger;
@@ -81,24 +84,28 @@ public final class RegisterManager
 						continue;
 					}
 
+					Map<String, ModContainer> map = Loader.instance().getIndexedModList();
+
 					switch (registerType)
 					{
 						case ITEM:
 						{
 							if (object instanceof Item)
 							{
+								Loader.instance().setActiveModContainer(map.get(modid));
 								((Item) object).setRegistryName(new ResourceLocation(modid, objectName));
 								((Item) object).setTranslationKey(modid + "." + objectName);
+
 								ITEMS.add((Item) object);
 								registeredCount++;
 
-								boolean need;
+								boolean need = true;
 								try
 								{
-									need = field.getAnnotation(RegisterModel.class).value();
+									need = field.getAnnotation(SkippingModelRegistry.class).value();
 								} catch (Exception e)
 								{
-									continue;
+
 								}
 								if (need && event.getSide().isClient())
 								{
@@ -111,6 +118,7 @@ public final class RegisterManager
 						{
 							if (object instanceof Block)
 							{
+								Loader.instance().setActiveModContainer(map.get(modid));
 								((Block) object).setRegistryName(new ResourceLocation(modid, objectName));
 								((Block) object).setTranslationKey(modid + "." + objectName);
 
@@ -119,13 +127,13 @@ public final class RegisterManager
 								BLOCKS.add((Block) object);
 								registeredCount++;
 
-								boolean need;
+								boolean need = true;
 								try
 								{
-									need = field.getAnnotation(RegisterModel.class).value();
+									need = field.getAnnotation(SkippingModelRegistry.class).value();
 								} catch (Exception e)
 								{
-									continue;
+
 								}
 								if (need && event.getSide().isClient())
 								{
@@ -139,9 +147,17 @@ public final class RegisterManager
 
 						}
 					}
+					Loader.instance().setActiveModContainer(null);
 				}
 			}
 			LogHelper.info(logger, "Loaded %d %s(s) from %s in %s.", registeredCount, registerType, registryName, modid);
 		}
+	}
+
+	public static void clearAll()
+	{
+		ITEMS = null;
+		BLOCKS = null;
+		MODEL_ITEMS = null;
 	}
 }
