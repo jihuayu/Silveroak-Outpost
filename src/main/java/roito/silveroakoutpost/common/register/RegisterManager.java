@@ -2,6 +2,7 @@ package roito.silveroakoutpost.common.register;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
@@ -35,7 +36,11 @@ public final class RegisterManager
 	{
 		event.getRegistry().registerAll(ITEMS.toArray(new Item[ITEMS.size()]));
 	}
-
+	@SubscribeEvent
+	public static void registerBlocks(RegistryEvent.Register<Block> event)
+	{
+		event.getRegistry().registerAll(BLOCKS.toArray(new Block[BLOCKS.size()]));
+	}
 	public static void loadRegistry(FMLPreInitializationEvent event) throws ClassNotFoundException, IllegalAccessException, InstantiationException
 	{
 		ASMDataTable table = event.getAsmData();
@@ -102,6 +107,29 @@ public final class RegisterManager
 						}
 						case BLOCK:
 						{
+							if (object instanceof Block)
+							{
+								((Block) object).setRegistryName(new ResourceLocation(modid, objectName));
+								((Block) object).setTranslationKey(modid + "." + objectName);
+
+								Item itemBlock = new ItemBlock((Block) object).setRegistryName(new ResourceLocation(modid, objectName));
+								ITEMS.add(itemBlock);
+								BLOCKS.add((Block) object);
+								registeredCount++;
+
+								boolean need;
+								try
+								{
+									need = field.getAnnotation(RegisterModel.class).value();
+								} catch (Exception e)
+								{
+									continue;
+								}
+								if (need && event.getSide().isClient())
+								{
+									MODEL_ITEMS.add(itemBlock);
+								}
+							}
 							break;
 						}
 						case POTION:
