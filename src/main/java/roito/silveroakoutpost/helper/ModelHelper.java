@@ -10,9 +10,13 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.HashMap;
+
 @SideOnly(Side.CLIENT)
 public final class ModelHelper
 {
+	private static HashMap<Item, String[]> modelNames = new HashMap<>();
+
 	public static void registerItemVariants(String modid, Item item)
 	{
 		if (item.getHasSubtypes())
@@ -20,16 +24,27 @@ public final class ModelHelper
 			NonNullList<ItemStack> subItems = NonNullList.create();
 			item.getSubItems(item.getCreativeTab(), subItems);
 			NonNullList<ResourceLocation> rl = NonNullList.create();
+			String[] names = new String[16];
 			for (ItemStack subItem : subItems)
 			{
 				String subItemName = item.getTranslationKey(subItem);
 				subItemName = subItemName.substring(subItemName.indexOf(".") + 1);
 				subItemName = subItemName.substring(subItemName.indexOf(".") + 1);
 
+				names[subItem.getMetadata()] = subItemName;
 				rl.add(new ResourceLocation(modid, subItemName));
 			}
+			modelNames.put(item, names);
+
 			ResourceLocation[] rL = new ResourceLocation[rl.size()];
 			ModelBakery.registerItemVariants(item, rl.toArray(rL));
+		}
+		else
+		{
+			String itemName = item.getTranslationKey();
+			itemName = itemName.substring(itemName.indexOf(".") + 1);
+			itemName = itemName.substring(itemName.indexOf(".") + 1);
+			modelNames.put(item, new String[]{itemName});
 		}
 	}
 
@@ -41,19 +56,17 @@ public final class ModelHelper
 			item.getSubItems(item.getCreativeTab(), subItems);
 			for (ItemStack subItem : subItems)
 			{
-				String subItemName = item.getTranslationKey(subItem);
-				subItemName = subItemName.substring(subItemName.indexOf(".") + 1);
-				subItemName = subItemName.substring(subItemName.indexOf(".") + 1);
-
-				ModelLoader.setCustomModelResourceLocation(item, subItem.getMetadata(), new ModelResourceLocation(modid + ":" + subItemName, "inventory"));
+				ModelLoader.setCustomModelResourceLocation(item, subItem.getMetadata(), new ModelResourceLocation(modid + ":" + modelNames.get(item)[subItem.getMetadata()], "inventory"));
 			}
 		}
 		else
 		{
-			String itemName = item.getTranslationKey();
-			itemName = itemName.substring(itemName.indexOf(".") + 1);
-			itemName = itemName.substring(itemName.indexOf(".") + 1);
-			ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(modid + ":" + itemName, "inventory"));
+			ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(modid + ":" + modelNames.get(item)[0], "inventory"));
 		}
+	}
+
+	public static void clear()
+	{
+		modelNames = null;
 	}
 }
